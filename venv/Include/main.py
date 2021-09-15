@@ -63,6 +63,7 @@ def getNotes(temperatures, cities):
         notes.append(note)
     return notes
 
+
 if __name__ == "__main__":
     url = 'https://www.viennaairport.com/passagiere/ankunft__abflug/abfluege'
     times, cities = getCityAndTime(url)
@@ -71,11 +72,9 @@ if __name__ == "__main__":
     try:
         os.remove('airport.db')
     except:
-        print('File does not exist.')
+        pass
     db = db.DB()
     db.createTable()
     for i in range(len(times)):
         db.insert_airport(times[i], cities[i], temperatures[i], notes[i])
-    # print(db.get_all_airports())
-
-
+    print(db.get_all_airports())

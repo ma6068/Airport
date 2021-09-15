@@ -22,7 +22,7 @@ class DB:
 
     def createTable(self):
         self.cur.execute('''
-            CREATE TABLE Airport (
+            CREATE TABLE IF NOT EXISTS Airport (
                 id INTEGER NOT NULL PRIMARY KEY,
                 time TEXT NOT NULL,
                 city TEXT NOT NULL,
@@ -44,7 +44,7 @@ class DB:
     # ------------------------------ GET ------------------------------
     def get_all_airports(self):
         try:
-            self.cur.execute("SELECT * FROM Airport",)
+            self.cur.execute("SELECT time, city, temperature, note FROM Airport",)
             posting = self.cur.fetchall()
             if posting:
                 return posting
