@@ -4,6 +4,8 @@ import requests
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 import re
+import db
+import os
 
 
 def getCityAndTime(url):
@@ -66,3 +68,14 @@ if __name__ == "__main__":
     times, cities = getCityAndTime(url)
     temperatures = getTemperature(cities)
     notes = getNotes(temperatures, cities)
+    try:
+        os.remove('airport.db')
+    except:
+        print('File does not exist.')
+    db = db.DB()
+    db.createTable()
+    for i in range(len(times)):
+        db.insert_airport(times[i], cities[i], temperatures[i], notes[i])
+    # print(db.get_all_airports())
+
+
