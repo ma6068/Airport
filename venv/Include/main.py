@@ -24,6 +24,45 @@ def getCityAndTime(url):
     cities = cities[: len(cities) - 2] # last two elements are not a city => delete it
     return times, cities
 
+def getTemperature(cities):
+    api_key = 'b8dffc5cce80c763531d05464a0f37e0'
+    temperatures = []
+    for city in cities:
+        apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + api_key
+        try:
+            json_data = requests.get(apiUrl).json()
+            temperature = (int)(json_data['main']['temp'] - 273.15)  # from kelvin to celsius
+        except:
+            temperature = 'No info'  # no temperature info for that city
+        temperatures.append(temperature)
+    return temperatures
+
+def getNotes(temperatures, cities):
+    notes = []
+    for i in range(len(temperatures)):
+        # if there is no info for temperature
+        if temperatures[i] == 'No info':
+            note = 'No temperature information'
+        # Spain
+        elif (cities[i] == 'Barcelona' or cities[i] == 'Madrid') and temperatures[i] >= 22:
+            note = 'Hace mucho calor.'
+        elif (cities[i] == 'Barcelona' or cities[i] == 'Madrid') and temperatures[i] < 22:
+            note = 'No hace mucho calor.'
+        # Germany
+        elif (cities[i] =='Frankfurt' or cities[i] == 'Stuttgart' or cities[i] == 'Leipzig') and temperatures[i] >= 22:
+            note = 'Es ist sehr heiß.'
+        elif ( cities[i] =='Frankfurt' or cities[i] == 'Stuttgart' or cities[i] == 'Leipzig') and temperatures[i] < 22:
+            note = 'Es ist nicht sehr heiß.'
+        # Other
+        elif temperatures[i] >= 22:
+            note = 'It\'s very hot.'
+        else:
+            note = 'It is not very hot.'
+        notes.append(note)
+    return notes
+
 if __name__ == "__main__":
     url = 'https://www.viennaairport.com/passagiere/ankunft__abflug/abfluege'
     times, cities = getCityAndTime(url)
+    temperatures = getTemperature(cities)
+    notes = getNotes(temperatures, cities)
