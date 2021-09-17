@@ -2,6 +2,12 @@
 
 Instructions on how to run the project:
   - clone the project
+  - install: 
+    - bs4 (pip install beautifulsoup4)
+    - urllib (pip install urllib3)
+    - requests (pip install requests)
+    - selenium (pip install selenium)
+    - webdriver_manager (pip install webdriver-manager)
   - run the main.py file (Airport/venv/Include/main.py)
   - the result is printed in console (time, city, city temperature and note for each of the flights)
 
