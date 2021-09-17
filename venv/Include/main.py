@@ -6,6 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import re
 import db
 import os
+import json
 
 
 def getCityAndTime(url):
@@ -39,7 +40,7 @@ def getTemperature(cities):
         temperatures.append(temperature)
     return temperatures
 
-def getNotes(temperatures, cities):
+def createNotes(temperatures, cities):
     notes = []
     for i in range(len(temperatures)):
         # if there is no info for temperature
@@ -63,12 +64,34 @@ def getNotes(temperatures, cities):
         notes.append(note)
     return notes
 
+def createCache(times, cities, temperatures):
+    data_set = {}
+    for i in range(len(times)):
+        data_set['key_' + str(i)] = (times[i], cities[i], temperatures[i])
+    with open('cache_data.txt', 'w') as outfile:
+        json.dump(data_set, outfile, ensure_ascii=False)
+
+def readCache():
+    with open('cache_data.txt') as json_file:
+        data_set = json.load(json_file)
+        return data_set
+
+def createNotesFromJson(json_data):
+    cities = []
+    temperatures = []
+    for key in json_data:
+        cities.append(json_data[key][1])
+        temperatures.append(json_data[key][2])
+    return createNotes(temperatures, cities)
+
 
 if __name__ == "__main__":
     url = 'https://www.viennaairport.com/passagiere/ankunft__abflug/abfluege'
     times, cities = getCityAndTime(url)
     temperatures = getTemperature(cities)
-    notes = getNotes(temperatures, cities)
+    notes = createNotes(temperatures, cities)
+
+    #################################### Put data in database ####################################
     try:
         os.remove('airport.db')
     except:
@@ -78,3 +101,11 @@ if __name__ == "__main__":
     for i in range(len(times)):
         db.insert_airport(times[i], cities[i], temperatures[i], notes[i])
     print(db.get_all_airports())
+
+    #################################### Caching ####################################
+    createCache(times, cities, temperatures)
+    json_data = readCache()
+    notes = createNotesFromJson(json_data)
+    print(notes)
+
+    #################################### Testing ####################################
