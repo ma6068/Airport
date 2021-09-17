@@ -65,6 +65,10 @@ def createNotes(temperatures, cities):
     return notes
 
 def createCache(times, cities, temperatures):
+    try:
+        os.remove('cache_data.txt')
+    except:
+        pass
     data_set = {}
     for i in range(len(times)):
         data_set['key_' + str(i)] = (times[i], cities[i], temperatures[i])
@@ -100,12 +104,10 @@ if __name__ == "__main__":
     db.createTable()
     for i in range(len(times)):
         db.insert_airport(times[i], cities[i], temperatures[i], notes[i])
-    print(db.get_all_airports())
+    # print(db.get_all_airports())
 
     #################################### Caching ####################################
     createCache(times, cities, temperatures)
     json_data = readCache()
     notes = createNotesFromJson(json_data)
-    print(notes)
-
-    #################################### Testing ####################################
+    # print(notes)
