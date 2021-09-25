@@ -32,7 +32,8 @@ def getCityAndTime(url):
 
 def getTemperature(cities):
     try:
-        api_key = 'b8dffc5cce80c763531d05464a0f37e0'
+        # put your api key here
+        api_key = ''
         temperatures = []
         for city in cities:
             apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + api_key
